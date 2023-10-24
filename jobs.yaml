@@ -1,0 +1,12 @@
+Dehumidify:
+  Event: Humidity Sensor
+  Trigger: > 70%
+  Action: Run Fan
+
+    ''''
+    Save jobs in database - most jobs run code. 
+    DB tables for available actions
+    GUI to define jobs: triggers and actions
+    Jobs can save state to enable comparison triggers, e.g. wind increases by 10 knots
+    Some triggers could be injected by raspberry pi, not nmea, e.g. humidity.
+    '''

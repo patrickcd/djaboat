@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello, world!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+      <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+  </head>
+  <body>
+    <main class="container">
+      <nav>
+        <ul>
+          <li><strong>Brand</strong></li>
+        </ul>
+        <ul>
+            <li><a href="/inventory/item/">Items</a></li>
+            <li><a href="/inventory/maintenance/">Maintenance</a></li>
+            <li><a href="/inventory/passage/">Passages</a></li>
+        </ul>
+      </nav>
+      <section>
+        <!-- have a button POST a click via AJAX -->
+        <button hx-get="/inventory/clicked" hx-swap="innerHTML">
+          Click Me
+        </button>
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </body>
+</html>
