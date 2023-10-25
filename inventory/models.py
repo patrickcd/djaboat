@@ -1,7 +1,14 @@
 from django.db import models
+from django.urls import reverse
 
 
-class Location(models.Model):
+class UrlMixin:
+    def get_absolute_url(self):
+        view_name = f"{self._meta.model_name}-detail"  # type: ignore
+        return reverse(view_name, kwargs={"pk": self.pk})  # type: ignore
+
+
+class Location(models.Model, UrlMixin):
     name = models.CharField(max_length=200)
     cabin = models.CharField(max_length=100)
 
@@ -9,7 +16,7 @@ class Location(models.Model):
         return self.name
 
 
-class Category(models.Model):
+class Category(models.Model, UrlMixin):
     class Meta:
         verbose_name_plural = "categories"
 
@@ -19,7 +26,7 @@ class Category(models.Model):
         return self.name
 
 
-class Item(models.Model):
+class Item(models.Model, UrlMixin):
     name = models.CharField(max_length=200)
     notes = models.TextField()
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
@@ -30,26 +37,34 @@ class Item(models.Model):
         return self.name
 
 
-class Maintenance(models.Model):
+class Maintenance(models.Model, UrlMixin):
     class Meta:
         verbose_name_plural = "maintenance tasks"
+        verbose_name = "maintenance task"
 
     task = models.CharField(max_length=200)
     recurrence = models.CharField(max_length=100)
-    last_performed = models.DateTimeField(blank=True)
+    last_performed = models.DateField(null=True, default=None, blank=True)
+    next_scheduled = models.DateField(null=True, default=None, blank=True)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+
     def __str__(self):
-        return f'Maintenance Task: {self.task}'
+        return self.task
 
 
-class MaintenanceLog(models.Model):
+class MaintenanceLog(models.Model, UrlMixin):
     maintenance = models.ForeignKey(Maintenance, on_delete=models.SET_NULL, null=True)
     date = models.DateTimeField()
     notes = models.TextField()
 
+    def __str__(self):
+        return (
+            f"Log Entry for {self.maintenance.task} on {self.date.strftime('%d %b %Y')}"
+        )
 
-class Passage(models.Model):
+
+class Passage(models.Model, UrlMixin):
     date_start = models.DateTimeField()
     date_end = models.DateTimeField()
     destination = models.CharField(max_length=200)
@@ -60,11 +75,10 @@ class Passage(models.Model):
         return f"{self.origin} to {self.destination} on {self.date_start}"
 
 
-class Waypoint(models.Model):
+class Waypoint(models.Model, UrlMixin):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     time = models.DateTimeField(auto_now_add=True)
     passage = models.ForeignKey(Passage, on_delete=models.SET_NULL, null=True)
     wind_speed = models.IntegerField()
     wind_direction = models.IntegerField()
-

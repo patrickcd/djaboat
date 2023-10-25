@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+        ".vscode": true,
+        "**/__pycache__": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
+    "python.analysis.typeCheckingMode": "basic"
+}

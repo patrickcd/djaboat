@@ -3,27 +3,31 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello, world!</title>
+    <title>DjaBoat App</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
       <script src="https://unpkg.com/htmx.org@1.9.6"></script>
   </head>
   <body>
+    <div style="float: right;">
+      <form method="get" action="/inventory/search">
+        <input type="search" name="boatq" onchange="self.form.submit()"/>
+      </form>
+    </div>
     <main class="container">
       <nav>
         <ul>
-          <li><strong>Brand</strong></li>
+          <li><strong>DjaBoat</strong></li>
         </ul>
         <ul>
             <li><a href="/inventory/item/">Items</a></li>
             <li><a href="/inventory/maintenance/">Maintenance</a></li>
+            <li><a href="/inventory/maintenancelog/">Maintenance Logs</a></li>
             <li><a href="/inventory/passage/">Passages</a></li>
+            <li><a href="/inventory/location/">Locations</a></li>
+            <li><a href="/inventory/category/">Categories</a></li>
         </ul>
       </nav>
       <section>
-        <!-- have a button POST a click via AJAX -->
-        <button hx-get="/inventory/clicked" hx-swap="innerHTML">
-          Click Me
-        </button>
         {% block content %}{% endblock %}
       </section>
     </main>

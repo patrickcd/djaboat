@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load util %}
+
+{% block content %}
+
+<div>
+    <form method="get" action="/inventory/search">
+        <input type="search" name="boatq" onchange="self.form.submit()"
+            placeholder="search for.." value="{{term}}"/>
+        <button type="submit">Go</button>
+    </form>
+</div>
+
+{% if rows %}
+    {% for row in rows %}
+    <p>
+        <a href="{{ row|searchlink }}">    
+        {{row.object_text}}
+        </a>
+    </p>
+    <hr/>
+    {% endfor %}
+{% else %}
+    <p>Nothing found</p>
+{% endif %}
+
+{% endblock %}

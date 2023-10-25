@@ -1,27 +1,18 @@
 from django.urls import path
 
-from neapolitan.views import CRUDView
-
-from . import views, models
-
-class ItemView(CRUDView):
-    model = models.Item
-    fields = ['name', 'notes', 'location', 'category', 'weight_grams']
-
-
-class PassageView(CRUDView):
-    model = models.Passage
-    fields = ['date_start', 'date_end', 'destination', 'origin', 'distance']
-
-class MaintenanceView(CRUDView):
-    model = models.Maintenance
-    fields = ['task', 'recurrence', 'last_performed', 'item']
+from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("clicked", views.clicked, name="clicked"),
+    path("search", views.search, name="search"),
 ]
 
-for crud_view in (ItemView, PassageView, MaintenanceView):
+for crud_view in (
+    views.ItemView,
+    views.PassageView,
+    views.MaintenanceView,
+    views.LocationView,
+    views.CategoryView,
+    views.MaintenanceLogView,
+):
     urlpatterns += crud_view.get_urls()
-
