@@ -26,12 +26,20 @@ class Category(models.Model, UrlMixin):
         return self.name
 
 
+class Documents(models.Model, UrlMixin):
+    title = models.CharField(max_length=100)
+    document = models.JSONField()
+
+
 class Item(models.Model, UrlMixin):
     name = models.CharField(max_length=200)
     notes = models.TextField()
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     weight_grams = models.IntegerField(default=0)
+    document = models.ForeignKey(
+        Documents, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -46,8 +54,11 @@ class Maintenance(models.Model, UrlMixin):
     recurrence = models.CharField(max_length=100)
     last_performed = models.DateField(null=True, default=None, blank=True)
     next_scheduled = models.DateField(null=True, default=None, blank=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    target_item = models.ForeignKey(
+        Item, null=True, blank=True, on_delete=models.CASCADE
+    )
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    requires_items = models.ManyToManyField(Item, related_name="used_for")
 
     def __str__(self):
         return self.task
