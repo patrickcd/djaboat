@@ -17,9 +17,9 @@
         --border-radius: 0.25rem;
         --border-width: 1px;
         --outline-width: 3px;
-        --spacing: 1rem;
+        --spacing: 0.6rem;
         --typography-spacing-vertical: 1.5rem;
-        --block-spacing-vertical: calc(var(--spacing) * 1.5);
+        --block-spacing-vertical: calc(var(--spacing) * 1.3);
         --block-spacing-horizontal: var(--spacing);
         --grid-spacing-vertical: 0;
         --grid-spacing-horizontal: var(--spacing);
@@ -36,28 +36,42 @@
     </style>
   </head>
   <body>
-    <div style="float: right;">
-      <form method="get" action="/inventory/search">
-        <input type="search" name="boatq" onchange="self.form.submit()"/>
-      </form>
-    </div>
-    <main class="container">
+    <header class="container">
       <nav>
         <ul>
-          <li><strong>DjaBoat</strong></li>
+          <li><strong>HeadLand</strong></li>
         </ul>
         <ul>
-            <li><a href="/inventory/item/">Items</a></li>
-            <li><a href="/inventory/maintenance/">Maintenance</a></li>
-            <li><a href="/inventory/maintenancelog/">Maintenance Logs</a></li>
-            <li><a href="/inventory/passage/">Passages</a></li>
-            <li><a href="/inventory/location/">Locations</a></li>
-            <li><a href="/inventory/category/">Categories</a></li>
+          <li>
+            <details role="list">
+              <summary aria-haspopup="listbox">Sections:</summary>
+              <ul role="listbox">
+                <li><a href="/inventory/item/">Items</a></li>
+                <li><a href="/inventory/maintenance/">Maintenance</a></li>
+                <li><a href="/inventory/maintenancelog/">Maintenance Logs</a></li>
+                <li><a href="/inventory/passage/">Passages</a></li>
+                <li><a href="/inventory/location/">Locations</a></li>
+                <li><a href="/inventory/category/">Categories</a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <input type="search" name="boatq" size="40"
+            hx-get="/inventory/search"
+            hx-trigger="keyup changed delay:800ms, search"
+            hx-target="#search-results"
+            hx-on::before-request="document.querySelector('main.container').setAttribute('aria-busy', 'true')"
+            hx-on::after-request="document.querySelector('main.container').setAttribute('aria-busy', '')"
+            >
+          </li>
         </ul>
       </nav>
-      <section>
+    </header>
+    <main class="container">
+      <div id="search-results" style="padding:1.5rem"></div>
         {% block content %}{% endblock %}
-      </section>
     </main>
   </body>
 </html>

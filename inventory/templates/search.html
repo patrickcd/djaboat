@@ -1,15 +1,13 @@
-{% extends "base.html" %}
+
 {% load util %}
 
 {% block content %}
-
-<div>
-    <form method="get" action="/inventory/search">
-        <input type="search" name="boatq" onchange="self.form.submit()"
-            placeholder="search for.." value="{{term}}"/>
-    </form>
+<div role="button" style="float: right;" onclick="this.closest('#search-results').innerHTML=''">
+    x
 </div>
+<p>Query: <i>"{{q}}"</i>
 
+</p>
 {% if rows %}
     {% for row in rows %}
     <article>

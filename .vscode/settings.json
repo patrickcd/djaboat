@@ -7,5 +7,6 @@
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true
     },
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+    "python.pythonPath": "/home/patrick/.venvs/djaboat/bin/python"
 }

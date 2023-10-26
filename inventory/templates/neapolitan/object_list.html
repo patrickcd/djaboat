@@ -3,16 +3,23 @@
 {% block content %}
 
 <div>
-  <h1> {{ object_verbose_name_plural|capfirst }}</h1>
-  <div>
+  <div style="float: right;">
     <a href="{{ create_view_url }}">Add a new {{ object_verbose_name }}</a>
   </div>
+  <h3> {{ object_verbose_name_plural|capfirst }}</h3>
 </div>
+
+{% if filterset %}
+<form onchange="this.submit()">
+  {{filterset.form}}
+</form>
+{% endif %}
 
 {% if object_list %}
     {% list_objects object_list view.fields %}
 {% else %}
-    <p>There are no {{ object_verbose_name_plural }}. Create one now?</p>
+    <p>No {{ object_verbose_name_plural }} found. 
+      <a href="{{ create_view_url }}">Create one now?</a></p>
 {% endif %}
 
 <hr>

@@ -25,12 +25,12 @@ class MaintenanceView(CRUDView):
     model = models.Maintenance
     fields = [
         "task",
-        "recurrence",
         "last_performed",
         "next_scheduled",
-        "item",
+        "target_item",
         "category",
     ]
+    filterset_fields = ["category"]
 
 
 class CategoryView(CRUDView):
@@ -50,7 +50,18 @@ class MaintenanceLogView(CRUDView):
 
 def search(request: HttpRequest) -> HttpResponse:
     termq = request.GET.get("boatq", default="")
-    terms = termq.replace(" or ", " OR ").replace(" and ", " AND ")
+
+    def queryify(terms):
+        for token in terms.split():
+            match token:
+                case "or":
+                    yield "OR"
+                case "and":
+                    yield "AND"
+                case _:
+                    yield f"{token}*"
+
+    terms = " ".join(queryify(termq))
     rows = []
     if terms:
         stmt = "SELECT * FROM search_index WHERE object_text MATCH %s LIMIT 0,20"
@@ -61,4 +72,4 @@ def search(request: HttpRequest) -> HttpResponse:
             columns = ["object_text", "object_id", "content_table"]
             rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    return render(request, "search.html", {"rows": rows, "term": termq})
+    return render(request, "search.html", {"rows": rows, "term": termq, "q": terms})
