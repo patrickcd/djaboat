@@ -7,16 +7,22 @@
     <a href="{{ create_view_url }}">Add a new {{ object_verbose_name }}</a>
   </div>
   <h3> {{ object_verbose_name_plural|capfirst }}</h3>
+
 </div>
 
 {% if filterset %}
-<form onchange="this.submit()">
-  {{filterset.form}}
-</form>
+<details style="max-width: 30em;">
+  <summary role="button">Filter</summary>
+  <form onchange="this.submit()">
+    <div class="grid">
+      {{filterset.form}}
+    </div>
+  </form>
+</details>
 {% endif %}
 
 {% if object_list %}
-    {% list_objects object_list view.fields %}
+    {% list_objects object_list view request%}
 {% else %}
     <p>No {{ object_verbose_name_plural }} found. 
       <a href="{{ create_view_url }}">Create one now?</a></p>

@@ -1,36 +1,34 @@
 {% load util %}
 {% load neapolitan %}
 
-<div>
 
 <table role="grid">
-<thead>
-<tr>
-{% for header in headers %}
-    <th scope="col">{{ header|capfirst }}</th>
-{% endfor %}
-    <th scope="col">
-        <span>Actions</span>
-    </th>
-
-</tr>
-</thead>
-<tbody>
-{% for object in object_list %}
-<tr>
-    {% for field in object.fields %}
-    <td>{{ field|linkify }} </td>
+    <thead>
+    <tr>
+    {% for header in headers %}
+        <th scope="col">
+            {{ header|capfirst }}
+        </th>
     {% endfor %}
-    <td>
-    {% for action_name, action_url in object.actions.items %}
-        {% if action_name != "Create" %}
-        <a href="{{action_url}}">{{action_name}}</a>{% if not forloop.last %} | {% endif %}
-        {% endif %}
+        <th scope="col">
+            <span>Actions</span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+    <tr>
+        {% for field in object.fields %}
+        <td>{{ field|linkify }} </td>
+        {% endfor %}
+        <td>
+        {% for action_name, action_url in object.actions.items %}
+            {% if action_name != "Create" %}
+            <a href="{{action_url}}">{{action_name}}</a>{% if not forloop.last %} | {% endif %}
+            {% endif %}
+        {% endfor %}
+        </td>
+    </tr>
     {% endfor %}
-    </td>
-</tr>
-{% endfor %}
-</tbody>
+    </tbody>
 </table>
-
-</div>

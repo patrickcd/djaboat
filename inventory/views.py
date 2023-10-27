@@ -31,6 +31,8 @@ class MaintenanceView(CRUDView):
         "category",
     ]
     filterset_fields = ["category"]
+    order_fields = (("last_performed", "latest"), ("next_scheduled", "upcoming"))
+    field_filters_map = {"task": lambda x: x[:50]}
 
 
 class CategoryView(CRUDView):
