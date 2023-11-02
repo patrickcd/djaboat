@@ -1,33 +1,36 @@
 {% load util %}
 {% load neapolitan %}
 
-
-<table role="grid">
+<style>
+    .unbuttoned{
+        all:unset;
+        border:none;
+        cursor: pointer;
+    }
+</style>
+<table role="grid" class="data-table">
     <thead>
-    <tr>
+    <tr id="object-list-header-row">
     {% for header in headers %}
-        <th scope="col">
-            {{ header|capfirst }}
-        </th>
+        {% if header.sorting_value %}
+            <th scope="col" role="link">
+                <button type="submit" name="sorting" class="unbuttoned"
+                        value="{{header.sorting_value}}">{{header.label|safe|capfirst}}</button>
+            </th>
+        {% else %}
+            <th scope="col">
+                {{ header.label|capfirst }}
+            </th>
+        {% endif %}
     {% endfor %}
-        <th scope="col">
-            <span>Actions</span>
-        </th>
     </tr>
     </thead>
     <tbody>
     {% for object in object_list %}
-    <tr>
+    <tr data-viewurl="{{object.actions.View}}">
         {% for field in object.fields %}
-        <td>{{ field|linkify }} </td>
+        <td>{{ field|linkify|default_if_none:'' }} </td>
         {% endfor %}
-        <td>
-        {% for action_name, action_url in object.actions.items %}
-            {% if action_name != "Create" %}
-            <a href="{{action_url}}">{{action_name}}</a>{% if not forloop.last %} | {% endif %}
-            {% endif %}
-        {% endfor %}
-        </td>
     </tr>
     {% endfor %}
     </tbody>

@@ -33,7 +33,45 @@
         --transition: 0.2s ease-in-out;
         --modal-overlay-backdrop-filter: blur(0.25rem);
       }
+      #search-results{
+        position: fixed;
+        padding: 5rem;
+        width: 90%;
+        z-index: 1; 
+        overflow: auto; 
+        background-color: whitesmoke;
+      }
+      table.data-table td{
+        cursor: pointer;
+      }
+      table.data-table tr:hover{
+        border-left: 2px solid black;
+      }
+      main.container{
+        max-width: 900px;
+      }
     </style>
+    <script>
+      function showSearch(){
+        document.getElementById('search-results').style.display = 'block';
+      }
+      function closeSearch(){
+        var sr = document.getElementById('search-results');
+        sr.innerHTML = '';
+        sr.style.display = 'none';
+        document.getElementById('search-box').value = '';
+      }
+      document.addEventListener("DOMContentLoaded", function(e) {
+        var tableEl = document.querySelector('table.data-table')
+        if ( ! tableEl) return;
+        tableEl.addEventListener('click', function(evt){
+          var td = evt.target;
+          var parentRow = td.closest('TR');
+          var viewUrl = parentRow.dataset.viewurl;
+          document.location = viewUrl;
+        })
+      });
+    </script>
   </head>
   <body>
     <main class="container">
@@ -59,18 +97,17 @@
           </ul>
           <ul>
             <li>
-              <input type="search" name="boatq" size="40"
+              <input type="search" name="boatq" size="40" id="search-box"
               hx-get="/inventory/search"
-              hx-trigger="keyup changed delay:600ms, search"
+              hx-trigger="keyup[this.value.length>2] changed delay:200ms, search"
               hx-target="#search-results"
-              hx-on::before-request="document.querySelector('main.container').setAttribute('aria-busy', 'true')"
-              hx-on::after-request="document.querySelector('main.container').setAttribute('aria-busy', '')"
+              hx-on::after-request="showSearch()"
               >
             </li>
           </ul>
         </nav>
       </header>
-      <div id="search-results" style="padding:1.5rem"></div>
+      <div id="search-results" style="display: none;"></div>
         {% block content %}{% endblock %}
     </main>
   </body>

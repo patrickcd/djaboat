@@ -7,6 +7,7 @@ from .models import (
     MaintenanceLog,
     Passage,
     Waypoint,
+    ItemType,
 )
 
 
@@ -38,6 +39,10 @@ class WaypointAdmin(admin.ModelAdmin):
     pass
 
 
+class ItemTypeAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -45,3 +50,4 @@ admin.site.register(Maintenance, MaintenanceAdmin)
 admin.site.register(MaintenanceLog, MaintenanceLogAdmin)
 admin.site.register(Passage, PassageAdmin)
 admin.site.register(Waypoint, WaypointAdmin)
+admin.site.register(ItemType, ItemTypeAdmin)

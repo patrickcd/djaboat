@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load neapolitan %}
+
+{% block content %}
+
+
+<h4>{{ object_verbose_name|capfirst }}</h4>
+
+
+{% object_detail object view.detail_fields %}
+
+
+{% endblock %}

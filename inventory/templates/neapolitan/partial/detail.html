@@ -1,0 +1,23 @@
+{% load neapolitan %}
+
+<table>
+{% for field_name, val in object %}
+<tr>
+    <th>{{ field_name|capfirst }}:</th>
+    <td>
+        {% if val|is_model_instance %}
+            <a href="{{val.get_absolute_url}}">{{val}}</a>
+        {% else %}
+            {{ val|linebreaksbr  }}
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+<p>
+   {% for action_name, action_url in actions.items %}
+       {% if action_name == "Edit" or action_name == "Delete" %}
+       <a href="{{action_url}}" role="button">{{action_name}}</a>
+       {% endif %}
+   {% endfor %}
+</p>

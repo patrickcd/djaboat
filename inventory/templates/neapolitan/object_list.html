@@ -6,28 +6,30 @@
   <div style="float: right;">
     <a href="{{ create_view_url }}">Add a new {{ object_verbose_name }}</a>
   </div>
-  <h3> {{ object_verbose_name_plural|capfirst }}</h3>
+  <h4>{{ object_verbose_name_plural|capfirst }}</h4>
 
 </div>
 
 {% if filterset %}
-<details style="max-width: 30em;">
-  <summary role="button">Filter</summary>
-  <form onchange="this.submit()">
+<form action="." method="GET" id="search-form" onchange="this.submit();">
     <div class="grid">
       {{filterset.form}}
     </div>
-  </form>
-</details>
 {% endif %}
 
-{% if object_list %}
+  <div id="table-data">
+    
+    {% if object_list %}
     {% list_objects object_list view request%}
-{% else %}
+    {% else %}
     <p>No {{ object_verbose_name_plural }} found. 
-      <a href="{{ create_view_url }}">Create one now?</a></p>
-{% endif %}
+      <a href="{{ create_view_url }}" role="button">Create one now?</a></p>
+      <hr>
+      {% endif %}
+    </div>
 
-<hr>
+{% if filterset %}  
+  </form>
+{% endif %}
 
 {% endblock %}

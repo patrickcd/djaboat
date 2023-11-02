@@ -1,7 +1,14 @@
+{% load util %}
+
 {% for field in form %}
     {{ field.errors }}
+    {% if field.field.widget.input_type == 'hidden' %}
+        {# {{field}} #}
+    {% else %}
     <label for="{{ field.id_for_label }}">
-        {{field.label}} {{ field }}
+        {{field.label}}
+        {{ field }}
     </label>
+    {% endif %}
 {% endfor %}
 

@@ -1,10 +1,16 @@
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.db import connection
+from django.utils.text import Truncator
 
 from neapolitan.views import CRUDView
 
-from . import models
+from . import models, forms
+
+
+def _truncate(long_text):
+    truncator = Truncator(long_text)
+    return truncator.words(8)
 
 
 def index(request):
@@ -13,7 +19,22 @@ def index(request):
 
 class ItemView(CRUDView):
     model = models.Item
-    fields = ["name", "notes", "location", "category", "weight_grams"]
+    form_class = forms.ItemForm
+    fields = ["name", "location", "category"]
+    detail_fields = [
+        "name",
+        "notes",
+        "location",
+        "category",
+        "item_type",
+        "weight_grams",
+        "extra",
+    ]
+
+
+class ItemTypeView(CRUDView):
+    model = models.ItemType
+    fields = ["name", "properties"]
 
 
 class PassageView(CRUDView):
@@ -31,8 +52,11 @@ class MaintenanceView(CRUDView):
         "category",
     ]
     filterset_fields = ["category"]
-    order_fields = (("last_performed", "latest"), ("next_scheduled", "upcoming"))
-    field_filters_map = {"task": lambda x: x[:50]}
+    order_fields = (
+        ("last_performed", "last_performed"),
+        ("next_scheduled", "next_scheduled"),
+    )
+    field_filters_map = {"task": _truncate}
 
 
 class CategoryView(CRUDView):
@@ -52,6 +76,7 @@ class MaintenanceLogView(CRUDView):
 
 def search(request: HttpRequest) -> HttpResponse:
     termq = request.GET.get("boatq", default="")
+    db_table = request.GET.get("content_type", None)
 
     def queryify(terms):
         for token in terms.split():
@@ -74,4 +99,7 @@ def search(request: HttpRequest) -> HttpResponse:
             columns = ["object_text", "object_id", "content_table"]
             rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    return render(request, "search.html", {"rows": rows, "term": termq, "q": terms})
+    if "application/json" in request.META["HTTP_ACCEPT"].lower():
+        return JsonResponse(rows, safe=False)
+    else:
+        return render(request, "search.html", {"rows": rows, "term": termq, "q": terms})

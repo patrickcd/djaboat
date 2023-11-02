@@ -2,22 +2,22 @@
 {% load util %}
 
 {% block content %}
-<div role="button" style="float: right;" onclick="this.closest('#search-results').innerHTML=''">
-    x
-</div>
-<p>Query: <i>"{{q}}"</i>
 
-</p>
-{% if rows %}
-    {% for row in rows %}
-    <article>
-        <a href="{{ row|searchlink }}">    
-        {{row.object_text}}
-        </a>
-    </article>
-    {% endfor %}
-{% else %}
-    <p>Nothing found</p>
-{% endif %}
+    <div role="button" style="float: right;" onclick="closeSearch()">
+        X
+    </div>
+    {% if rows %}
+        <h3>Search Results:</h3>
+        {% for row in rows %}
+        <article>
+            <a href="{{ row|searchlink }}">    
+            {{row.object_text}}
+            </a>
+        </article>
+        {% endfor %}
+    {% else %}
+        <h3>No results found</h3>
+    {% endif %}
+
 
 {% endblock %}

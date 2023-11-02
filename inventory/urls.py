@@ -9,6 +9,7 @@ urlpatterns = [
 
 for crud_view in (
     views.ItemView,
+    views.ItemTypeView,
     views.PassageView,
     views.MaintenanceView,
     views.LocationView,

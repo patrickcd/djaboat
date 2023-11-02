@@ -26,9 +26,14 @@ class Category(models.Model, UrlMixin):
         return self.name
 
 
-class Documents(models.Model, UrlMixin):
-    title = models.CharField(max_length=100)
-    document = models.JSONField()
+class ItemType(models.Model, UrlMixin):
+    name = models.CharField(max_length=100)
+    properties = models.JSONField(
+        null=True, help_text="Provides a list of field names for populating Item.extra"
+    )
+
+    def __str__(self):
+        return self.name
 
 
 class Item(models.Model, UrlMixin):
@@ -37,9 +42,10 @@ class Item(models.Model, UrlMixin):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     weight_grams = models.IntegerField(default=0)
-    document = models.ForeignKey(
-        Documents, on_delete=models.SET_NULL, null=True, blank=True
+    item_type = models.ForeignKey(
+        ItemType, on_delete=models.SET_NULL, null=True, blank=True, default=None
     )
+    extra = models.JSONField(null=True)
 
     def __str__(self):
         return self.name
