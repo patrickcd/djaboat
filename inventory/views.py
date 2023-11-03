@@ -44,6 +44,7 @@ class PassageView(CRUDView):
 
 class MaintenanceView(CRUDView):
     model = models.Maintenance
+    form_class = forms.MaintenanceForm
     fields = [
         "task",
         "last_performed",
@@ -74,9 +75,9 @@ class MaintenanceLogView(CRUDView):
     fields = ("maintenance", "date", "notes")
 
 
-def search(request: HttpRequest) -> HttpResponse:
+def search(request: HttpRequest):
     termq = request.GET.get("boatq", default="")
-    db_table = request.GET.get("content_type", None)
+    content_type = request.GET.get("content_type", None)
 
     def queryify(terms):
         for token in terms.split():
@@ -91,11 +92,17 @@ def search(request: HttpRequest) -> HttpResponse:
     terms = " ".join(queryify(termq))
     rows = []
     if terms:
-        stmt = "SELECT * FROM search_index WHERE object_text MATCH %s LIMIT 0,20"
+        stmt_args = [terms]
+        stmt = "SELECT * FROM search_index WHERE object_text MATCH %s "
+        if content_type:
+            db_table = f"inventory_{content_type}"
+            stmt += " AND content_table = %s"
+            stmt_args.append(db_table)
+        stmt += " LIMIT 0,20"
         rows = None
 
         with connection.cursor() as cursor:  # type: ignore
-            cursor.execute(stmt, [terms])
+            cursor.execute(stmt, stmt_args)
             columns = ["object_text", "object_id", "content_table"]
             rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
@@ -103,3 +110,15 @@ def search(request: HttpRequest) -> HttpResponse:
         return JsonResponse(rows, safe=False)
     else:
         return render(request, "search.html", {"rows": rows, "term": termq, "q": terms})
+
+
+def add_new_location(request: HttpRequest):
+    if request.method == "GET":
+        location_form = forms.LocationForm()
+        return render(request, "partials/new_location.html", {"form": location_form})
+    if request.method == "POST":
+        form = forms.LocationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            item_location_form = forms.ItemLocationsForm()
+            return render(request, "partials/field.html", {"form": item_location_form})

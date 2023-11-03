@@ -3,19 +3,22 @@
 <link rel="stylesheet" href="{% static 'autocomplete.min.css' %}"></link>
 
 <input type="hidden" name="{{widget.name}}" {% include "django/forms/widgets/attrs.html" %}>
-<input type="text" id="cat-lookup"/>
+<input type="text" id="lookup-textbox"/>
 
 <script>
 
-var input = document.getElementById('cat-lookup');
-var hidden_field = document.getElementById('id_category');
+var input = document.getElementById('lookup-textbox');
+
+var hidden_field = document.getElementById('{{widget.attrs.id}}');
 
 autocomplete({
     input: input,
     fetch: async function(text, update) {
-        text = text.toLowerCase();
+        var qp = new URLSearchParams();
+        qp.set('boatq', text);
+        qp.set('content_type', '{{widget.attrs.content_type}}')
         // you can also use AJAX requests instead of preloaded data
-        var response = await fetch("/inventory/search?boatq=Eng", {
+        var response = await fetch("/inventory/search?"+qp.toString(), {
             headers: {'Accept': 'application/json'}
         })
         var suggestions = await response.json();
